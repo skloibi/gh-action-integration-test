@@ -1,0 +1,53 @@
+{
+  "name": "Python",
+  "image": "mcr.microsoft.com/devcontainers/python:3.14",
+  "updateContentCommand": "uv sync --all-groups",
+  "postCreateCommand": "pre-commit install || true",
+  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "ms-python.debugpy",
+        "esbenp.prettier-vscode",
+        "ms-python.mypy-type-checker"
+      ],
+      "settings": {
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff"
+        },
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "terminal.integrated.env.linux": {
+          "VIRTUAL_ENV": "${workspaceFolder}/.venv",
+          "PATH": "${workspaceFolder}/.venv/bin:${env:PATH}"
+        },
+        "files.watcherExclude": {
+          "**/.git/objects/**": true,
+          "**/.git/subtree-cache/**": true,
+          "**/node_modules/*/**": true,
+          "**/.venv/**": true,
+          "**/__pycache__/**": true,
+          "**/.pytest_cache/**": true,
+          "**/.mypy_cache/**": true,
+          "**/.ruff_cache/**": true,
+        },
+        "files.exclude": {
+          "**/__pycache__": true,
+          "**/.pytest_cache": true,
+          "**/.mypy_cache": true,
+          "**/.ruff_cache": true,
+        },
+        "python.analysis.exclude": [
+          "**/__pycache__",
+          "**/.pytest_cache",
+          "**/.mypy_cache",
+          "**/.ruff_cache"
+        ]
+      }
+    }
+  }
+}

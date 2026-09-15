@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gh-action-integration-test"
+version = "0.1.0"
+description = "A basic framework to set up integration tests for GitHub Actions"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+dev = [
+  "check-dependencies>=2.0.1",
+  "mypy==1.15.0",
+  "pre-commit>=4.6.2",
+  "pyfakefs==6.2.0",
+  "pytest==9.0.3",
+  "pytest-cov==7.1.0",
+  "pytest-mock==3.15.1",
+  "ruff==0.16.2",
+]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+src = ["gh_action_integration_test", "tests"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "COM812", # trailing-comma rule: conflicts with the formatter
+  "ISC001", # implicit string concat: conflicts with the formatter
+  "D203",   # 1 blank line before class docstring (conflicts with D211)
+  "D213",   # multi-line docstring summary on second line (conflicts with D212)
+  "CPY001", # don't require copyright notice
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+  "D",       # docstring rules: tests don't need docstrings
+  "PLR2004", # magic-value-comparison: tests often use magic values
+  "S101",    # assert: allow assertions in tests (rewritten by pytest)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["gh_action_integration_test"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+pretty = true
+warn_unreachable = true
+check_untyped_defs = true
+enable_error_code = ["ignore-without-code"]
+packages = ["gh_action_integration_test", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+  "--cov=gh_action_integration_test",
+  "--cov-report=term-missing",
+  "--cov-fail-under=95",
+]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_also = ["pragma: no cover"]
+fail_under = 95
+
+[tool.check-dependencies]
+# tooling dependencies
+known-extra = ["check-dependencies", "mypy", "pre-commit", "pytest-cov", "ruff"]
+# dependencies referred to via absolute imports
+known-missing = [
+  "tests.scenario_utils",
+  "tests.scenario._test_scenarios_.simple_scenario.SimpleScenario",
+]
