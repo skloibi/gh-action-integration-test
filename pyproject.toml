@@ -10,6 +10,9 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = []
 
+[project.scripts]
+gh-action-integration-test = "gh_action_integration_test.main:main"
+
 [dependency-groups]
 dev = [
   "check-dependencies>=2.0.1",
