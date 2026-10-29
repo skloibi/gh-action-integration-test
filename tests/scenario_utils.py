@@ -1,10 +1,10 @@
 from pathlib import Path
 
 from gh_action_integration_test.git.repository import TestRepository
-from gh_action_integration_test.scenario import Scenario
+from gh_action_integration_test.scenario import FileTreeScenario
 
 
-class DummyScenario(Scenario):
+class DummyScenario(FileTreeScenario):
     def __init__(self, tag: str = "dummy") -> None:
         super().__init__(tag, "success")
         self.verified = False

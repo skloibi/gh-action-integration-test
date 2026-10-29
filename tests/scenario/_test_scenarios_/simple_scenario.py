@@ -3,10 +3,10 @@
 from pathlib import Path
 
 from gh_action_integration_test.git.repository import TestRepository
-from gh_action_integration_test.scenario import Scenario
+from gh_action_integration_test.scenario import FileTreeScenario
 
 
-class SimpleScenario(Scenario):
+class SimpleScenario(FileTreeScenario):
     def __init__(self) -> None:
         super().__init__("simple_scenario", "OK")
         self.prepared = False

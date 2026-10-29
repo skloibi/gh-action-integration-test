@@ -14,6 +14,9 @@ class SubScenario0(BaseScenario):
     def __init__(self) -> None:
         super().__init__("sub_scenario0")
 
+    def _prepare_repository(self, repo: TestRepository) -> None:
+        pass
+
     def verify(self, repo: TestRepository) -> None:
         pass
 

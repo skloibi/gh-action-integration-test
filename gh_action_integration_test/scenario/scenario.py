@@ -73,13 +73,19 @@ class Scenario(ABC):
         repo.initialize_repo()
         log.info("---- Remote path: %s", repo.remote_path)
         log.info("---- Local path: %s", repo.local_path)
-
-        shutil.copytree(self.path, repo.local_path, dirs_exist_ok=True)
-
-        repo.commit_all("Initial commit")
-        repo.push()
-
         self.repository = repo
+
+        self._prepare_repository(repo)
+
+    @abstractmethod
+    def _prepare_repository(self, repo: TestRepository) -> None:
+        """Prepare the scenario by creating any required files in the repo.
+
+        Args:
+            repo (TestRepository) : The test repository that defines the
+                                    working directory
+
+        """
 
     def check_outcome(self, outcome: str) -> None:
         """Check the previous action outcome based on the expected one.
@@ -116,3 +122,29 @@ class Scenario(ABC):
         repo = TestRepository(self.name, remote_path, local_path)
         self.check_outcome(outcome)
         self.verify(repo)
+
+
+class FileTreeScenario(Scenario):
+    """An abstract integration test scenario backed by a given file tree."""
+
+    def __init__(self, name: str, expected_outcome: str, base_path: Path | None = None) -> None:
+        """Initialize a new test scenario.
+
+        Args:
+            name (str) : The name of the scenario
+            expected_outcome (str) : The expected outcome of the scenario
+            base_path (Optional[Path]) : The base path for the file tree
+
+        """
+        super().__init__(name, expected_outcome)
+
+        if base_path is None:
+            base_path = Path("action_tests") / "_files"
+
+        self.path = base_path / name
+
+    def _prepare_repository(self, repo: TestRepository) -> None:
+        shutil.copytree(self.path, repo.local_path, dirs_exist_ok=True)
+
+        repo.commit_all("Initial commit")
+        repo.push()

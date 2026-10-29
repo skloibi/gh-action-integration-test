@@ -4,7 +4,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 from pyfakefs.fake_filesystem import FakeFilesystem
 
-from gh_action_integration_test.scenario import Scenario, ScenarioManager, check_commit, is_scenario
+from gh_action_integration_test.git.repository import TestRepository
+from gh_action_integration_test.scenario import FileTreeScenario, Scenario, ScenarioManager, check_commit, is_scenario
 from tests.scenario_utils import DummyScenario
 
 
@@ -31,6 +32,7 @@ class TestIsScenario:
             pass
 
         assert not is_scenario(Scenario)
+        assert not is_scenario(FileTreeScenario)
         assert not is_scenario(NotAScenario)
         assert not is_scenario(ScenarioManager)
 
@@ -78,7 +80,19 @@ class TestCheckCommit:
             )
 
 
+class PathChoiceScenario(FileTreeScenario):
+    def _prepare_repository(self, repo: TestRepository) -> None:
+        pass
+
+    def verify(self, repo: TestRepository) -> None:
+        pass
+
+
 class TestScenario:
+    def test_assigns_given_base_path(self, fs: FakeFilesystem) -> None:  # noqa: ARG002
+        scenario = PathChoiceScenario("dummy", "success", Path("test"))
+        assert scenario.path == Path("test") / "dummy"
+
     def test_prepare_fails_if_repo_dirs_dont_exist(self, fs: FakeFilesystem) -> None:
         fs.create_dir("/base/remote")
         fs.create_dir("/base/local")
